@@ -12,7 +12,12 @@ web3.eth.getAccounts().then(function (accounts) {
 
     // deploy contract
     // your code
-    accounts.forEach(element => {
-        console.log(element);
-    });
+    bank.deploy({data: bytecode})
+        .send({from: accounts[0], gas: 1500000, gasPrice: 3000000000})
+        .on('error', function(error){ console.log(error) })
+        .on('transactionHash', function(transactionHash){ console.log(transactionHash) })
+        .on('receipt', function(receipt){
+            console.log(receipt.contractAddress) // contains the new contract address
+            fs.writeFileSync("./address.txt", receipt.contractAddress)
+        })
 })
